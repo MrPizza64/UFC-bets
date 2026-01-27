@@ -2,9 +2,10 @@ import { useSelector } from "react-redux";
 import { Navbar } from "../components/navbar";
 import { Text_One } from "../components/texts";
 import type { RootState } from "../redux/store";
+import { useObserver } from "../common/observer";
 
 export const ProfilePage = () => {
-
+    const {ref, visible} = useObserver();
     const wins = useSelector((state: RootState) => state.users.currentAccount.wins)
     const defeats = useSelector((state: RootState) => state.users.currentAccount.defeats);
     const earned = useSelector((state: RootState) => state.users.currentAccount.earned)
@@ -19,7 +20,13 @@ export const ProfilePage = () => {
     return (
         <>
             <Navbar />
-            <div className="flex flex-col h-screen  mx-40 my-20 gap-12">
+            <div 
+            ref={ref}
+            className={`
+                flex flex-col h-screen  mx-40 my-20 gap-12
+                transition-all duration-600
+                ${visible ? 'opacity-100' : 'opacity-0'}
+            `}>
                 <div className="flex">
                     <img className="border-white border-2 w-50 h-50 rounded-[100%]" />
                     <div className="flex flex-col h-full  mx-5 justify-center">

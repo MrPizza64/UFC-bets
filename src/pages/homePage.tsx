@@ -4,6 +4,7 @@ import { Text_Two } from "../components/texts";
 import { Button } from "../components/button";
 import { FightCard } from "../common/fightLogic";
 import { useNavigate } from "react-router-dom";
+import { useObserver } from "../common/observer";
 
 interface FighterElement {
     children: React.ReactNode;
@@ -20,6 +21,8 @@ const FighterElement = ({ children }: FighterElement) => {
 export const HomePage = () => {
     const fights = FightCard.fights;
     const navigate = useNavigate();
+    const {ref, visible} = useObserver();
+
     const rows = [
         fights.slice(0, 1),
         fights.slice(1, 4),
@@ -30,7 +33,15 @@ export const HomePage = () => {
     return (
         <>
             <Navbar />
-            <div className="flex items-center justify-center flex-col">
+            <div
+                ref={ref}
+                className={`
+                    flex items-center justify-center flex-col
+                    transition-all duration-700
+                    ${visible ? 'opacity-100' : 'opacity-0'}
+                `}
+            
+            >
                 <Text_Two>UFC #434</Text_Two>
                 <p className="font-koho font-bold text-white text-xl">Main event</p>
                 <div className="flex flex-col  items-center">

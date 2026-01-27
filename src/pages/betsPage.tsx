@@ -4,6 +4,8 @@ import { Button } from "../components/button";
 import { useState } from "react";
 import { FightCard, FightLogic } from "../common/fightLogic";
 import { useNavigate } from "react-router-dom";
+import { Navbar } from "../components/navbar";
+import { useObserver } from "../common/observer";
 
 interface FigtherSelection {
     children: React.ReactNode,
@@ -35,7 +37,7 @@ export const BetsPage = () => {
     const [winner, setWinner] = useState('')
     const [enableResults, setEnableResults] = useState(true)
     const navigate = useNavigate();
-
+    const {ref, visible} = useObserver();
     const handleClick = () => {
         if (fighter !== '') {
             const result = FightLogic({
@@ -59,7 +61,13 @@ export const BetsPage = () => {
 
 
     return (
-        <>
+        <div 
+            ref={ref}
+            className={`
+            transition-all duration-800
+            ${visible ? 'opacity-100' : 'opacity-0'}
+        `}>
+            <Navbar/>
             {winner == '' && (
                 <div className="fixed inset-0 flex -z-10 gap-7.25 px-32 pt-14">
                     <div className="w-[50vw] flex justify-center items-end">
@@ -132,6 +140,6 @@ export const BetsPage = () => {
 
                 </div>
             </div>
-        </>
+        </div>
     )
 };
