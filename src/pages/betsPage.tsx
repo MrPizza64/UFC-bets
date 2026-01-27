@@ -1,11 +1,15 @@
 import type React from "react";
 import { Text_One, Tittle } from "../components/texts";
 import { Button } from "../components/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FightCard, FightLogic } from "../common/fightLogic";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/navbar";
 import { useObserver } from "../common/observer";
+import { useDispatch, useSelector } from "react-redux";
+import { openModal } from "../redux/modalsSlice";
+import { updateBalance } from "../redux/userSlice";
+import type { RootState } from "../redux/store";
 
 interface FigtherSelection {
     children: React.ReactNode,
@@ -37,17 +41,36 @@ export const BetsPage = () => {
     const [winner, setWinner] = useState('')
     const [enableResults, setEnableResults] = useState(true)
     const navigate = useNavigate();
-    const {ref, visible} = useObserver();
+    const { ref, visible } = useObserver();
+    const dispatch = useDispatch();
+    const money = useSelector((state: RootState) => state.bets.amount)
+    const [betPlaced, setBetPlaced] = useState(false);
+    const modalOpen = useSelector((state: RootState) => state.modals.betModal);
+
     const handleClick = () => {
         if (fighter !== '') {
             const result = FightLogic({
                 fighterOne: FightCard.fights[fight].fighter_one,
                 fighterTwo: FightCard.fights[fight].fighter_two,
             });
+
             setWinner(result);
-            setEnableResults(true)
+            setEnableResults(true);
+
+            if (result === fighter) {
+                dispatch(updateBalance(money));
+            } else {
+                dispatch(updateBalance(-money));
+            }
         }
     };
+
+    useEffect(() => {
+        if (!modalOpen && betPlaced && money > 0) {
+            handleClick();
+            setBetPlaced(false);
+        }
+    }, [modalOpen]);
 
     const nextFight = () => {
         if (fight + 1 >= FightCard.fights.length) {
@@ -61,13 +84,13 @@ export const BetsPage = () => {
 
 
     return (
-        <div 
+        <div
             ref={ref}
             className={`
             transition-all duration-800
             ${visible ? 'opacity-100' : 'opacity-0'}
         `}>
-            <Navbar/>
+            <Navbar />
             {winner == '' && (
                 <div className="fixed inset-0 flex -z-10 gap-7.25 px-32 pt-14">
                     <div className="w-[50vw] flex justify-center items-end">
@@ -94,7 +117,7 @@ export const BetsPage = () => {
                         winner === fighter ? (
                             <>
                                 <Text_One>
-                                    Congratulations! The winner is {winner} and you won $500
+                                    Congratulations! The winner is {winner} and you won ${money}
                                 </Text_One>
                                 <Button onClick={nextFight}>
                                     Next Fight
@@ -134,7 +157,10 @@ export const BetsPage = () => {
                                         setFighter(FightCard.fights[fight].fighter_two.name)
                                     }
                                 }}>{FightCard.fights[fight].fighter_two.name}</FighterSelection>
-                            <Button disabled={enableResults} onClick={handleClick}>Results</Button>
+                            <Button disabled={enableResults} onClick={() => {
+                                setBetPlaced(true);
+                                dispatch(openModal('betModal'))
+                            }}>Bet</Button>
                         </>
                     )}
 
@@ -142,4 +168,4 @@ export const BetsPage = () => {
             </div>
         </div>
     )
-};
+}; 

@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import Modals from './modalsSlice';
 import Users from './userSlice';
+import Bets from './betsSlice';
 import {
     persistStore,
     persistReducer,
@@ -15,7 +16,9 @@ import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({
     modals: Modals,
-    users: Users
+    users: Users,
+    bets: Bets,
+    
 });
 
 const persistConfig = {
