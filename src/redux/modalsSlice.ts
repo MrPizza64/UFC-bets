@@ -19,8 +19,7 @@ const ModalSlice = createSlice({
         openModal: (state, action: PayloadAction<keyof state>) => {
             state[action.payload] = true;
         },
-        closeModal: (state, action: PayloadAction<keyof state>) => {
-            console.log(state[action.payload], action.payload   )
+        closeModal: (state, action: PayloadAction<keyof state>) => {            
             state[action.payload] = false;
         },
         
