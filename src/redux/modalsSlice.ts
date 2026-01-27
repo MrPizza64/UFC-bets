@@ -3,13 +3,15 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 interface state {
     signUpModal: boolean,
     loginModal: boolean,
-    walletModal: boolean
+    walletModal: boolean,
+    betModal: boolean,
 }
 
 const initialState: state = {
     signUpModal: false,
     loginModal: false,
     walletModal: false,
+    betModal: false,
 }
 
 const ModalSlice = createSlice({
